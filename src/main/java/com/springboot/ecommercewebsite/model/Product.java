@@ -68,7 +68,7 @@ public class Product {
     @Column(name = "created_at", columnDefinition = "TIMESTAMP")
     private LocalDateTime createAt;
 
-    @ManyToOne()
+    @ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE,CascadeType.REFRESH,CascadeType.PERSIST})
     @JoinColumn(name = "category_id")
     private Category category;
 

@@ -17,7 +17,7 @@ import java.util.Set;
 @AllArgsConstructor
 public class Cart {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @OneToOne(fetch = FetchType.LAZY)
