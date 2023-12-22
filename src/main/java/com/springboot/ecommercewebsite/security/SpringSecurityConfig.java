@@ -2,6 +2,7 @@ package com.springboot.ecommercewebsite.security;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -26,7 +27,7 @@ import java.util.Collections;
 @Configuration
 @AllArgsConstructor
 @RequiredArgsConstructor
-public class SpringSecurityConfig {
+public class SpringSecurityConfig  {
 
     private UserDetailsService userDetailsService;
 
@@ -34,6 +35,14 @@ public class SpringSecurityConfig {
     public static PasswordEncoder passwordEncoder(){
         return new BCryptPasswordEncoder();
     }
+
+
+    @Bean
+    public JwtAuthenticationFilter jwtAuthenticationFilter() {
+        return new JwtAuthenticationFilter();
+    }
+
+
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -46,13 +55,14 @@ public class SpringSecurityConfig {
                                 .requestMatchers("/api/**").authenticated()
                                 .anyRequest().permitAll()
                 )
-                .addFilterBefore(new JwtAuthenticationFilter(), BasicAuthenticationFilter.class)  // Replace with your actual filter
+                .addFilterBefore(jwtAuthenticationFilter(), BasicAuthenticationFilter.class)  // Replace with your actual filter
                 .csrf().disable()
                 .cors().configurationSource(request -> {
                     CorsConfiguration cfg = new CorsConfiguration();
                     cfg.setAllowedOrigins(Arrays.asList(
                             "http://localhost:3000",
-                            "http://localhost:4200"
+                            "http://localhost:4200",
+                            "http://localhost:8080"
                     ));
                     cfg.setAllowedMethods(Collections.singletonList("*"));
                     cfg.setAllowCredentials(true);
@@ -66,7 +76,11 @@ public class SpringSecurityConfig {
                 .and()
                 .formLogin();
 
+
         return http.build();
+
+
+
     }
 
 
