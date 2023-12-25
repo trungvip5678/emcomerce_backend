@@ -1,12 +1,15 @@
 package com.springboot.ecommercewebsite.controller;
 
 import com.springboot.ecommercewebsite.exception.UserException;
+import com.springboot.ecommercewebsite.model.Cart;
 import com.springboot.ecommercewebsite.model.User;
 import com.springboot.ecommercewebsite.repository.UserRepository;
 import com.springboot.ecommercewebsite.request.LoginRequest;
 import com.springboot.ecommercewebsite.response.AuthResponse;
 import com.springboot.ecommercewebsite.security.JwtTokenProvider;
-import com.springboot.ecommercewebsite.service.CustomUserServiceImpl;
+import com.springboot.ecommercewebsite.service.CartService;
+import com.springboot.ecommercewebsite.service.CustomeUserServiceImpl;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -25,13 +28,17 @@ public class AuthController {
     private JwtTokenProvider jwtProvider;
 
     private  PasswordEncoder passwordEncoder;
-    private CustomUserServiceImpl customUserService;
+    private CustomeUserServiceImpl customUserService;
 
-    public AuthController(UserRepository userRepository,PasswordEncoder passwordEncoder , JwtTokenProvider jwtProvider, CustomUserServiceImpl customUserService){
+    private CartService cartService;
+
+    @Autowired
+    public AuthController(UserRepository userRepository,PasswordEncoder passwordEncoder , JwtTokenProvider jwtProvider, CustomeUserServiceImpl customUserService,CartService cartService){
         this.userRepository = userRepository;
         this.jwtProvider = jwtProvider;
         this.customUserService = customUserService;
         this.passwordEncoder = passwordEncoder;
+        this.cartService = cartService;
     }
 
     @PostMapping("/signup")
@@ -43,7 +50,7 @@ public class AuthController {
         System.out.println(user);
 
         User isEmailExist = userRepository.findByEmail(email);
-
+        System.out.println("====================="+isEmailExist);
         if(isEmailExist!=null){
             throw new UserException("Email is Already used with another account");
         }
@@ -56,14 +63,13 @@ public class AuthController {
 
         User savedUSer = userRepository.save(createdUser);
 
-        Authentication authentication = new UsernamePasswordAuthenticationToken(savedUSer.getEmail(),savedUSer.getPassword());
-        System.out.println(authentication);
-        SecurityContextHolder.getContext().setAuthentication(authentication);
 
+        Authentication authentication = new UsernamePasswordAuthenticationToken(savedUSer.getEmail(),savedUSer.getPassword());
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+//        System.out.println("============ authen" + authentication);
         String token = jwtProvider.generateToken(authentication);
-        System.out.println("Token: ==========" + token);
         AuthResponse authResponse = new AuthResponse(token, "Signup Success");
-        System.out.println("REsponse: =======" + authResponse);
+        Cart cart = cartService.createCart(savedUSer);
         return new ResponseEntity<>(authResponse, HttpStatus.CREATED);
 
     }
