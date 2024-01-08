@@ -50,7 +50,6 @@ public class AuthController {
         System.out.println(user);
 
         User isEmailExist = userRepository.findByEmail(email);
-        System.out.println("====================="+isEmailExist);
         if(isEmailExist!=null){
             throw new UserException("Email is Already used with another account");
         }

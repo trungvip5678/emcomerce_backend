@@ -40,10 +40,14 @@ public class ProductController {
         return new ResponseEntity<Product>(product, HttpStatus.ACCEPTED);
     }
 
-//    @GetMapping("/products/search")
-//    public ResponseEntity<List<Product>> searchProductHandler(@RequestParam String q){
-//        List<Product> products= productService.searchProduct(q);
-//
-//        return new ResponseEntity<List<Product>>(products,HttpStatus.ACCEPTED);
-//    }
+    @PostMapping("/products/search")
+    public ResponseEntity<Page<Product>> searchProductHandler(@RequestBody Product product) throws ProductException{
+//        List<Product> products= productService.searchProduct(productName);
+//        List<Product> products= productService.findProductByName(productName);
+        System.out.println(product + "======");
+        Page<Product> res = productService.findProductByName(product.getTitle());
+        System.out.println(product.getTitle());
+
+        return new ResponseEntity<>(res,HttpStatus.ACCEPTED);
+    }
 }

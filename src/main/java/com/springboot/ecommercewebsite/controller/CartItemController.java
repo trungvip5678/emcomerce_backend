@@ -2,6 +2,7 @@ package com.springboot.ecommercewebsite.controller;
 
 import com.springboot.ecommercewebsite.exception.CartItemException;
 import com.springboot.ecommercewebsite.exception.UserException;
+import com.springboot.ecommercewebsite.model.CartItem;
 import com.springboot.ecommercewebsite.model.User;
 import com.springboot.ecommercewebsite.response.ApiResponse;
 import com.springboot.ecommercewebsite.service.CartItemService;
@@ -32,5 +33,18 @@ public class CartItemController {
         res.setMessage("Deleted item from cart");
         res.setStatus(true);
         return new ResponseEntity<>(res, HttpStatus.OK);
+    }
+
+    @PutMapping("/{cartItemId}")
+    public ResponseEntity<CartItem> updateCartItem(
+            @RequestBody CartItem cartItem,
+            @PathVariable Long cartItemId,
+            @RequestHeader("Authorization") String jwt
+    ) throws  UserException, CartItemException{
+        User use = userService.findUserProfileByJwt(jwt);
+
+        CartItem updatedCartItem = cartItemService.updateCartItem(use.getId(), cartItemId,cartItem);
+
+        return new ResponseEntity<>(updatedCartItem,HttpStatus.OK);
     }
 }
