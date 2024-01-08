@@ -52,6 +52,7 @@ public class SpringSecurityConfig  {
                 .and()
                 .authorizeHttpRequests(authorize ->
                         authorize
+                                .requestMatchers("/api/products/**").permitAll()
                                 .requestMatchers("/api/**").authenticated()
                                 .anyRequest().permitAll()
                 )
@@ -62,7 +63,8 @@ public class SpringSecurityConfig  {
                     cfg.setAllowedOrigins(Arrays.asList(
                             "http://localhost:3000",
                             "http://localhost:4200",
-                            "http://localhost:8080"
+                            "http://localhost:8080",
+                           "https://ecommerce-web-livid.vercel.app"
                     ));
                     cfg.setAllowedMethods(Collections.singletonList("*"));
                     cfg.setAllowCredentials(true);
