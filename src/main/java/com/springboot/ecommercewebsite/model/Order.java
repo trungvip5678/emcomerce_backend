@@ -23,6 +23,7 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "order_id")
     private String orderId;
 
@@ -32,8 +33,10 @@ public class Order {
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     private List<OrderItem> orderItems = new ArrayList<>();
 
+    @Column(name = "order_date", columnDefinition = "TIMESTAMP")
     private LocalDateTime orderDate;
 
+    @Column(name = "delivery_date", columnDefinition = "TIMESTAMP")
     private LocalDateTime deliveryDate;
 
     @OneToOne
@@ -52,5 +55,6 @@ public class Order {
 
     private int totalItem;
 
+    @Column(name = "create_at", columnDefinition = "TIMESTAMP")
     private LocalDateTime createAt;
 }
