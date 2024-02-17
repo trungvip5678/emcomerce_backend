@@ -35,5 +35,6 @@ public class OrderItem {
 
     private Long userId;
 
+    @Column(name = "delivery_date", columnDefinition = "TIMESTAMP")
     private LocalDateTime deliveryDate;
 }

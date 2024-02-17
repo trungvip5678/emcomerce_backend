@@ -33,5 +33,6 @@ public class Rating {
     @Column(name = "rating")
     private Double rating;
 
+    @Column(name = "created_at", columnDefinition = "TIMESTAMP")
     private LocalDateTime createAt;
 }
